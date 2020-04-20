@@ -1,4 +1,7 @@
 from random import uniform, random
+import configparser
+
+config = configparser.ConfigParser()
 
 
 def calculate_value_with_randomness(base, coef_randomness):

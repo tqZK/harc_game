@@ -20,11 +20,11 @@ class Battle:
             round_id += 1
 
         if not any([player.alive for player in self.players]):
-            result = "przegrana"
+            result = 0
         else:
-            result = "wygrana"
+            result = 1
 
-        logger.info(f">>>>> Bitwa {result}")
+        logger.info(f">>>>> Bitwa {'wygrana' if result else 'przegrana'}")
         self.results.result = result
         self.results.calculate_results(self.players, self.monsters)
 
