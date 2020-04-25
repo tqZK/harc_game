@@ -48,7 +48,7 @@ class Battle:
         )
         monsters_alive = sorted(
             [monster for monster in self.monsters if monster.alive],
-            key=lambda monster: (monster.lvl, monster.strenght)
+            key=lambda monster: (monster.strenght, monster.life_points)
         )
 
         round_results.n_players = len(players_alive)
