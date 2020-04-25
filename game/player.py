@@ -1,7 +1,7 @@
 import logging
 
 from game.config import (COEF_LOGISTICS_TO_EXP, COEF_STRENGHT_TO_EXP, COEF_GOLD_TO_EXP, COEF_WAR_EXP_TO_EXP,
-                         BASE_HIT_CHANCE, BASE_DEFENSE_CHANCE, BASE_LIFE_POINTS)
+                         BASE_HIT_CHANCE, BASE_DEFENSE_CHANCE, BASE_FIRST_ATTACK_CHANCE, BASE_LIFE_POINTS)
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +15,12 @@ class Player:
         self.cumulative_gold = gold
         self.items = []
         self.war_exp = 0
-        self.first_attack_chance = 0.5
 
         self.max_life_points = BASE_LIFE_POINTS
 
         self._life_points = self.max_life_points
         self.dmg_done = 0
+        self.received_war_exp = 0
 
     @property
     def alive(self):
@@ -48,25 +48,40 @@ class Player:
 
     @property
     def hit_chance(self):
+        # ST
         # TODO: dodefiniowac
         # z wyliczen
         return round(self.lvl * self.hit_chance_buffs * 0.1 + BASE_HIT_CHANCE, 3)
 
     @property
     def defense_chance(self):
+        # SO
         # TODO: dodefiniowac
         # z wyliczen
         return round(self.logistics * self.defense_chance_buffs * 0.01 + BASE_DEFENSE_CHANCE, 3)
 
     @property
+    def first_attack_chance(self):
+        # SO
+        # TODO: dodefiniowac
+        # z wyliczen
+        return round(self.first_attack_chance_buffs + BASE_FIRST_ATTACK_CHANCE, 3)
+
+    @property
     def hit_chance_buffs(self):
+        # SP, inicjatywa
         # TODO: zalezy od przedmiotow i budynkow, zaimplementuj
-        return 1.0
+        return 0.0
 
     @property
     def defense_chance_buffs(self):
         # TODO: zalezy od przedmiotow i budynkow, zaimplementuj
-        return 1.0
+        return 0.0
+
+    @property
+    def first_attack_chance_buffs(self):
+        # TODO: zalezy od przedmiotow i budynkow, zaimplementuj
+        return 0.0
 
     def __str__(self):
         return f"Gracz {self.id}:\t" \
@@ -81,10 +96,13 @@ class Player:
         return f"Gracz {self.id}:\t" \
                f"lvl={self.lvl}\t" \
                f"punkty_zycia={self.life_points}\t" \
+               f"max_punkty_zycia={self.max_life_points}\t" \
                f"sila={self.strenght}\t" \
-               f"p_hit={self.hit_chance}\t" \
-               f"p_def={self.defense_chance}\t".expandtabs(8)
+               f"ST={self.hit_chance}\t" \
+               f"SU={self.defense_chance}\t" \
+               f"SP={self.first_attack_chance}\t".expandtabs(8)
 
     def reset_battle_results(self):
         self.dmg_done = 0
         self._life_points = self.max_life_points
+        self.received_war_exp = 0

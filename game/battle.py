@@ -1,4 +1,5 @@
 import logging
+import statistics
 
 from game.battle_results import BattleResults, RoundResults, FightResults
 from game.utils import calculate_sucess
@@ -115,10 +116,18 @@ class Battle:
         return True
 
     def calculate_received_war_exp(self):
+        received = []
         for player in self.players:
             left_life_points_percent = round(player.life_points * 100 / player.max_life_points, 2)
-            received_war_exp = round(player.dmg_done * max(left_life_points_percent, 10) / 100)
-            logger.info(f"Gracz {player.id} "
-                        f"zadal {player.dmg_done} obrazen, "
-                        f"pozostalo mu {player.life_points} punktow zycia ({left_life_points_percent}%) - "
-                        f"otrzymuje {received_war_exp} DB")
+            player.received_war_exp = round(player.dmg_done * max(left_life_points_percent, 10) / 100)
+            received.append(player.received_war_exp)
+            logger.info("---")
+            logger.info(player.fight_stats())
+            logger.info(f"Gracz {player.id}:\t"
+                        f"zadal {player.dmg_done} obrazen,\t"
+                        f"pozostalo mu {player.life_points} punktow zycia ({left_life_points_percent}%)\t-\t"
+                        f"otrzymuje {player.received_war_exp} DB")
+        print(f"Srednia wartosc otrzymanego DB: {(sum(received) / len(received))}")
+        print(f"Mediana wartosci otrzymanego DB: {statistics.median(received)}")
+        print(f"Najmniejsza wartosc otrzymanego DB: {min(received)}")
+        print(f"Najwieksza wartosc otrzymanego DB: {max(received)}")

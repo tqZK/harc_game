@@ -27,4 +27,6 @@ def simulate_battle(config):
 
     battle.results.print_results()
     print()
+    print('------------------------')
+    print()
     return battle.results
