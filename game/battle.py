@@ -43,14 +43,14 @@ class Battle:
     def roundx(self):
         round_results = RoundResults()
 
-        players_alive = sorted(
-            [player for player in self.players if player.alive],
-            key=lambda player: (player.lvl, player.strenght, player.logistics)
-        )
-        monsters_alive = sorted(
-            [monster for monster in self.monsters if monster.alive],
-            key=lambda monster: (monster.strenght, monster.life_points)
-        )
+        players_alive = [player_set[0] for player_set in sorted(
+            [(player, random.random()) for player in [player for player in self.players if player.alive]],
+            key=lambda player: (player[0].lvl, player[0].strenght, player[0].logistics, player[1])
+        )]
+        monsters_alive = [monster_set[0] for monster_set in sorted(
+            [(monster, random.random()) for monster in self.monsters if monster.alive],
+            key=lambda monster: (monster[0].strenght, monster[0].life_points, monster[1])
+        )]
 
         round_results.n_players = len(players_alive)
         round_results.n_monsters = len(monsters_alive)

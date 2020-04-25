@@ -84,6 +84,9 @@ class Player:
         # TODO: zalezy od przedmiotow i budynkow, zaimplementuj
         return 0.0
 
+    def __repr__(self):
+        return f"<Gracz {self.id}>"
+
     def __str__(self):
         return f"Gracz {self.id}:\t" \
                f"lvl={self.lvl}\t" \
