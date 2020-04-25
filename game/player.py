@@ -7,20 +7,44 @@ logger = logging.getLogger(__name__)
 
 
 class Player:
-    def __init__(self, player_id, strenght=0, logistics=0, gold=0):
-        self.id = player_id
-        self.strenght = strenght
-        self.dmg = strenght * 0.1
-        self.logistics = logistics
-        self.gold = gold
-        self.cumulative_gold = gold
-        self.items = []
-        self.war_exp = 0
+    def __init__(self, **player_data):
+        try:
+            self.player_id = int(player_data["player_id"])
+            self.strenght = int(player_data["strenght"])
+            self.logistics = int(player_data["logistics"])
+            self.gold = int(player_data["gold"])
+        except KeyError as e:
+            logger.error(f"Nie mozna zainicjalizowac gracza - nie podano statystyki {e}")
+            raise
 
+        self.name = player_data.get("name", "")
+        self.initials = player_data.get("initials", "")
+
+        self.war_exp = int(player_data.get("war_exp"))
+        self.driver = (player_data.get("driver") == "tak")
+        self.training_cich = (player_data.get("training_cich") == "tak")
+        self.training_thh = (player_data.get("training_thh") == "tak")
+        self.training_malk = (player_data.get("training_malk") == "tak")
+        self.training_wig = (player_data.get("training_wig") == "tak")
+        self.gained_gold_buff = float(player_data.get("gained_gold_buff"))
+        self.gained_strength_buff = float(player_data.get("gained_strength_buff"))
+        self.gained_logistics_buff = float(player_data.get("gained_logistics_buff"))
+        self.gained_war_exp_buff = float(player_data.get("gained_war_exp_buff"))
+        self.bag = (player_data.get("bag") == "tak")
+        self.boosted_armor = (player_data.get("boosted_armor") == "tak")
+        self.cumulative_gold = self.gold + int(player_data.get("gold_for_guild", 0)) + int(player_data.get("gold_for_private", 0))
+
+        self.hit_chance_buffs = 0.0
+        self.defense_chance_buffs = 0.0
+        self.first_attack_chance_buffs = 0.0
         self.max_life_points = BASE_LIFE_POINTS
 
+        self.parse_items(player_data)
+
+        logger.debug(f"Gracz {self.player_id} pomyslnie stworzony")
+
         self._life_points = self.max_life_points
-        self.dmg_done = 0
+        self.dmg_done = 0.0
         self.received_war_exp = 0
 
     @property
@@ -34,6 +58,10 @@ class Player:
     @life_points.setter
     def life_points(self, value):
         self._life_points = max(0, value)
+
+    @property
+    def dmg(self):
+        return self.strenght * 0.1
 
     @property
     def exp(self):
@@ -51,44 +79,29 @@ class Player:
     def hit_chance(self):
         # ST
         # TODO: dodefiniowac
-        # z wyliczen
         return round(self.lvl * self.hit_chance_buffs * 0.1 + BASE_HIT_CHANCE, 3)
 
     @property
     def defense_chance(self):
         # SO
         # TODO: dodefiniowac
-        # z wyliczen
         return round(self.logistics * self.defense_chance_buffs * 0.01 + BASE_DEFENSE_CHANCE, 3)
 
     @property
     def first_attack_chance(self):
-        # SO
+        # SP, inicjatywa
         # TODO: dodefiniowac
-        # z wyliczen
         return round(self.first_attack_chance_buffs + BASE_FIRST_ATTACK_CHANCE, 3)
 
-    @property
-    def hit_chance_buffs(self):
-        # SP, inicjatywa
-        # TODO: zalezy od przedmiotow i budynkow, zaimplementuj
-        return 0.0
-
-    @property
-    def defense_chance_buffs(self):
-        # TODO: zalezy od przedmiotow i budynkow, zaimplementuj
-        return 0.0
-
-    @property
-    def first_attack_chance_buffs(self):
-        # TODO: zalezy od przedmiotow i budynkow, zaimplementuj
-        return 0.0
+    def parse_items(self, players_data):
+        # TODO
+        pass
 
     def __repr__(self):
-        return f"<Gracz {self.id}>"
+        return f"<Gracz {self.player_id}>"
 
     def __str__(self):
-        return f"Gracz {self.id}:\t" \
+        return f"Gracz {self.player_id}:\t" \
                f"lvl={self.lvl}\t" \
                f"sila={self.strenght}\t" \
                f"wikt_opierunek={self.logistics}\t" \
@@ -97,7 +110,7 @@ class Player:
                f"exp={self.exp}".expandtabs(11)
 
     def fight_stats(self):
-        return f"Gracz {self.id}:\t" \
+        return f"Gracz {self.player_id}:\t" \
                f"lvl={self.lvl}\t" \
                f"punkty_zycia={self.life_points}\t" \
                f"max_punkty_zycia={self.max_life_points}\t" \

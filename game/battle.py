@@ -66,7 +66,7 @@ class Battle:
     def fight(self, player, monster):
         fight_results = FightResults()
 
-        logger.info(f">> Walka gracza {player.id} z potworem {monster.id}")
+        logger.info(f">> Walka gracza {player.player_id} z potworem {monster.monster_id}")
         logger.info(f">> {player.fight_stats()}")
         logger.info(f">> {monster}")
 
@@ -124,7 +124,7 @@ class Battle:
             received.append(player.received_war_exp)
             logger.info("---")
             logger.info(player.fight_stats())
-            logger.info(f"Gracz {player.id}:\t"
+            logger.info(f"Gracz {player.player_id}:\t"
                         f"zadal {player.dmg_done} obrazen,\t"
                         f"pozostalo mu {player.life_points} punktow zycia ({left_life_points_percent}%)\t-\t"
                         f"otrzymuje {player.received_war_exp} DB")
