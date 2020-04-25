@@ -17,7 +17,10 @@ class Player:
         self.war_exp = 0
         self.first_attack_chance = 0.5
 
-        self._life_points = self.init_life_points()
+        self.max_life_points = BASE_LIFE_POINTS
+
+        self._life_points = self.max_life_points
+        self.dmg_done = 0
 
     @property
     def alive(self):
@@ -42,10 +45,6 @@ class Player:
     def lvl(self):
         # TODO: dodefiniowac
         return self.exp // 1000 + 1
-
-    def init_life_points(self):
-        # TODO: dodefiniowac
-        return self.lvl * BASE_LIFE_POINTS
 
     @property
     def hit_chance(self):
@@ -85,3 +84,7 @@ class Player:
                f"sila={self.strenght}\t" \
                f"p_hit={self.hit_chance}\t" \
                f"p_def={self.defense_chance}\t".expandtabs(8)
+
+    def reset_battle_results(self):
+        self.dmg_done = 0
+        self._life_points = self.max_life_points

@@ -11,6 +11,11 @@ class Battle:
         self.players = players or []
         self.monsters = monsters or []
         self.results = BattleResults()
+        self.reset_player_stats()
+
+    def reset_player_stats(self):
+        for player in self.players:
+            player.reset_battle_results()
 
     def run(self):
         round_id = 1
@@ -27,6 +32,11 @@ class Battle:
         logger.info(f">>>>> Bitwa {'wygrana' if result else 'przegrana'}")
         self.results.result = result
         self.results.calculate_results(self.players, self.monsters)
+
+        if result:
+            self.calculate_received_war_exp()
+        else:
+            logger.info("Nie rozdano doswiadczenia bojowego")
 
     def roundx(self):
         round_results = RoundResults()
@@ -75,6 +85,7 @@ class Battle:
         fight_results.player_attacked = True
         if calculate_sucess(player.hit_chance):
             monster.life_points -= player.strenght
+            player.dmg_done += player.strenght
             logger.info(f"Gracz trafil potwora z wartoscia {player.strenght}. "
                         f"Pozostale punkty zycia potwora: {monster.life_points}")
             fight_results.player_hit = True
@@ -102,3 +113,12 @@ class Battle:
                 fight_results.player_died = True
                 return False
         return True
+
+    def calculate_received_war_exp(self):
+        for player in self.players:
+            left_life_points_percent = round(player.life_points * 100 / player.max_life_points, 2)
+            received_war_exp = round(player.dmg_done * max(left_life_points_percent, 10) / 100)
+            logger.info(f"Gracz {player.id} "
+                        f"zadal {player.dmg_done} obrazen, "
+                        f"pozostalo mu {player.life_points} punktow zycia ({left_life_points_percent}%) - "
+                        f"otrzymuje {received_war_exp} DB")
