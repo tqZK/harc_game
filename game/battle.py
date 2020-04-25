@@ -1,5 +1,6 @@
 import logging
 import statistics
+import random
 
 from game.battle_results import BattleResults, RoundResults, FightResults
 from game.utils import calculate_sucess
@@ -85,9 +86,9 @@ class Battle:
         logger.info(f"Gracz atakuje potwora.")
         fight_results.player_attacked = True
         if calculate_sucess(player.hit_chance):
-            monster.life_points -= player.strenght
-            player.dmg_done += player.strenght
-            logger.info(f"Gracz trafil potwora z wartoscia {player.strenght}. "
+            monster.life_points -= player.dmg
+            player.dmg_done += player.dmg
+            logger.info(f"Gracz trafil potwora z wartoscia {player.dmg}. "
                         f"Pozostale punkty zycia potwora: {monster.life_points}")
             fight_results.player_hit = True
             if not monster.alive:

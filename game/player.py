@@ -10,6 +10,7 @@ class Player:
     def __init__(self, player_id, strenght=0, logistics=0, gold=0):
         self.id = player_id
         self.strenght = strenght
+        self.dmg = strenght * 0.1
         self.logistics = logistics
         self.gold = gold
         self.cumulative_gold = gold
