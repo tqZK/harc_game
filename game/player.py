@@ -37,7 +37,7 @@ class Player:
         self.hit_chance_buffs = 0.0
         self.defense_chance_buffs = 0.0
         self.first_attack_chance_buffs = 0.0
-        self.max_life_points = BASE_LIFE_POINTS
+        self.added_life_points = 0
 
         self.parse_items(player_data)
 
@@ -50,6 +50,10 @@ class Player:
     @property
     def alive(self):
         return bool(self.life_points > 0)
+
+    @property
+    def max_life_points(self):
+        return BASE_LIFE_POINTS + self.added_life_points
 
     @property
     def life_points(self):

@@ -15,17 +15,14 @@ class PlayersExporter:
 
         data = self.remove_empty_lines(data)
 
-        # TODO: validate file
-
         players = []
         for row in data:
             print(row)
-            players.append(Player(**row))
+            player = Player(**row)
+            # self.validate_player_with_data(player, row)
+            players.append(player)
 
-        # TODO: validate players (calculated stats)
-
-        # TODO: return players
-        return []
+        return players
 
     def read_tsv_file(self, filename):
         data = []
@@ -43,12 +40,11 @@ class PlayersExporter:
                 data_cleared.append(row)
         return data_cleared
 
-    def validate_player_with_data(self):
-        # TODO: validate lvl
-        # TODO: validate exp
-        # TODO: validate dmg
-        # TODO: validate cumulative_gold
-        # TODO: validate max life points
+    def validate_player_with_data(self, player, row):
+        for attr_name, attr in zip(
+            ["lvl", "exp", "dmg", "cumulative_gold", "max_life_points"],
+            [player.lvl, player.dmg, player.cumulative_gold, player.max_life_points]
+        ):
+            assert row[attr_name] == attr, f"Player {player.player_id} {attr_name} {attr} is not equal to exported {attr_name} {row[attr_name]}"
 
-
-        pass
+        # TODO: check for present bag - if not, then other_2 should be empty
