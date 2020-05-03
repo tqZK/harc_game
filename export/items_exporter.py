@@ -18,12 +18,11 @@ class ItemsExporter:
         for stat in stats:
             if '+' in stat:
                 stat_name, stat_value = stat.split("+")
-                parsed_stats.append((self.mapping[stat_name], float(stat_value)))
+                parsed_stats.append((self.mapping[stat_name], float(stat_value[:-1])))
             elif '-' in stat:
                 stat_name, stat_value = stat.split("-")
-                parsed_stats.append((self.mapping[stat_name], -float(stat_value)))
+                parsed_stats.append((self.mapping[stat_name], -float(stat_value[:-1])))
             else:
                 logger.error(f"Could not parse stat {stat} - unknown operator?")
                 raise Exception
         return item_name, parsed_stats
-

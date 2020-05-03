@@ -120,13 +120,17 @@ class Battle:
         received = []
         for player in self.players:
             left_life_points_percent = round(player.life_points * 100 / player.max_life_points, 2)
-            player.received_war_exp = round(player.dmg_done * max(left_life_points_percent, 10) / 100)
+            player.received_war_exp = round(
+                player.dmg_done * max(left_life_points_percent, 10) / 100 * (1.0 + player.gained_war_exp_buff)
+            )
             received.append(player.received_war_exp)
             logger.info("---")
             logger.info(player.fight_stats())
             logger.info(f"Gracz {player.player_id}:\t"
                         f"zadal {player.dmg_done} obrazen,\t"
-                        f"pozostalo mu {player.life_points} punktow zycia ({left_life_points_percent}%)\t-\t"
+                        f"pozostalo mu {player.life_points} punktow zycia ({left_life_points_percent}%)\t"
+                        f"ma buff {player.gained_war_exp_buff} do otrzymywanego DB\t"
+                        f"-\t"
                         f"otrzymuje {player.received_war_exp} DB")
         print(f"Srednia wartosc otrzymanego DB: {(sum(received) / len(received))}")
         print(f"Mediana wartosci otrzymanego DB: {statistics.median(received)}")

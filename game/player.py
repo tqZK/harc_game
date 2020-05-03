@@ -1,7 +1,7 @@
 import logging
 
 from game.config import (COEF_LOGISTICS_TO_EXP, COEF_STRENGHT_TO_EXP, COEF_GOLD_TO_EXP, COEF_WAR_EXP_TO_EXP,
-                         BASE_HIT_CHANCE, BASE_DEFENSE_CHANCE, BASE_FIRST_ATTACK_CHANCE, BASE_LIFE_POINTS)
+                         BASE_HIT_CHANCE, EXP_TO_NEXT_LVLS, BASE_DMG, BASE_DEFENSE_CHANCE, BASE_FIRST_ATTACK_CHANCE, BASE_LIFE_POINTS)
 
 logger = logging.getLogger(__name__)
 
@@ -20,22 +20,19 @@ class Player:
         self.name = player_data.get("name", "")
         self.initials = player_data.get("initials", "")
 
-        self.war_exp = int(player_data.get("war_exp"))
-        self.driver = (player_data.get("driver") == "tak")
-        self.training_cich = (player_data.get("training_cich") == "tak")
-        self.training_thh = (player_data.get("training_thh") == "tak")
-        self.training_malk = (player_data.get("training_malk") == "tak")
-        self.training_wig = (player_data.get("training_wig") == "tak")
+        self.war_exp = int(player_data.get("war_exp", 0))
+        self.driver = (player_data.get("driver", "") == "tak")
+        self.training_cich = (player_data.get("training_cich", "") == "tak")
+        self.training_thh = (player_data.get("training_thh", "") == "tak")
+        self.training_malk = (player_data.get("training_malk", "") == "tak")
+        self.training_wig = (player_data.get("training_wig", "") == "tak")
 
-        # TODO: this should be set only based on items!
-        self.gained_gold_buff = float(player_data.get("gained_gold_buff"))
-        self.gained_strength_buff = float(player_data.get("gained_strength_buff"))
-        self.gained_logistics_buff = float(player_data.get("gained_logistics_buff"))
-        self.gained_war_exp_buff = float(player_data.get("gained_war_exp_buff"))
-        # TODO: include gained_war_exp_buff in calculating war exp at end of battle
+        # TODO: this should be set only based on items?
+        self.gained_gold_buff = float(player_data.get("gained_gold_buff", 0.0))
+        self.gained_strength_buff = float(player_data.get("gained_strength_buff", 0.0))
+        self.gained_logistics_buff = float(player_data.get("gained_logistics_buff", 0.0))
+        self.gained_war_exp_buff = float(player_data.get("gained_war_exp_buff", 0.0))
 
-        # self.bag = (player_data.get("bag") == "tak")
-        # self.boosted_armor = (player_data.get("boosted_armor") == "tak")
         self.cumulative_gold = self.gold + int(player_data.get("gold_for_guild", 0)) + int(player_data.get("gold_for_private", 0))
 
         self.hit_chance_buffs = 0.0
@@ -70,37 +67,33 @@ class Player:
 
     @property
     def dmg(self):
-        return self.strenght * 0.1
+        return BASE_DMG + self.strenght * 0.1
 
     @property
     def exp(self):
-        return COEF_STRENGHT_TO_EXP * self.strenght + \
+        return round(COEF_STRENGHT_TO_EXP * self.strenght + \
                COEF_LOGISTICS_TO_EXP * self.logistics + \
                COEF_GOLD_TO_EXP * self.cumulative_gold + \
-               COEF_WAR_EXP_TO_EXP * self.war_exp
+               COEF_WAR_EXP_TO_EXP * self.war_exp)
 
     @property
     def lvl(self):
-        # TODO: dodefiniowac
-        return self.exp // 1000 + 1
+        return 1 + next((k for k, value in enumerate(EXP_TO_NEXT_LVLS) if value > self.exp), 9)
 
     @property
     def hit_chance(self):
         # ST
-        # TODO: dodefiniowac
-        return round(self.lvl * self.hit_chance_buffs * 0.1 + BASE_HIT_CHANCE, 3)
+        return round(BASE_HIT_CHANCE + self.lvl * 0.03 + self.hit_chance_buffs, 3)
 
     @property
     def defense_chance(self):
         # SO
-        # TODO: dodefiniowac
-        return round(self.logistics * self.defense_chance_buffs * 0.01 + BASE_DEFENSE_CHANCE, 3)
+        return round(BASE_DEFENSE_CHANCE + self.logistics * 0.0001 + self.defense_chance_buffs, 3)
 
     @property
     def first_attack_chance(self):
         # SP, inicjatywa
-        # TODO: dodefiniowac
-        return round(self.first_attack_chance_buffs + BASE_FIRST_ATTACK_CHANCE, 3)
+        return round(BASE_FIRST_ATTACK_CHANCE + self.first_attack_chance_buffs, 3)
 
     def parse_items(self, player_data):
         item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2"]

@@ -24,7 +24,8 @@ class PlayersExporter:
             # TODO: parse str to int etc.
             print(row_cleared)
             player = Player(**row_cleared)
-            # self.validate_player_with_data(player, row)
+            print(player)
+            self.validate_player_with_data(player, row)
             players.append(player)
             print('------')
 
@@ -55,11 +56,12 @@ class PlayersExporter:
                 player_data[item_place] = parsed_item
 
     def validate_player_with_data(self, player, row):
-        for attr_name, attr in zip(
-            ["lvl", "exp", "dmg", "cumulative_gold", "max_life_points"],
-            [player.lvl, player.dmg, player.cumulative_gold, player.max_life_points]
-        ):
-            assert row[attr_name] == attr, f"Player {player.player_id} {attr_name} {attr} is not equal to exported {attr_name} {row[attr_name]}"
+        for attr_name in ["lvl", "exp", "dmg", "cumulative_gold", "max_life_points"]:
+            value = getattr(player, attr_name)
+            # TODO: change it after parsing types
+            exported = type(value)(row[attr_name])
+            assert exported == value, \
+                f"Player {player.player_id} {attr_name} {value} is not equal to exported {attr_name} {exported}"
 
         # TODO: check for present bag - if not, then other_2 should be empty
         # TODO: validate buffs
