@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 class Monster:
     def __init__(self, monster_id, strength, life_points, first_attack_chance):
-        self.id = monster_id
+        self.monster_id = monster_id
         self._life_points = life_points
         self.strenght = strength
         self.first_attack_chance = first_attack_chance
@@ -23,6 +23,6 @@ class Monster:
         return bool(self.life_points > 0)
 
     def __str__(self):
-        return f"Potwor {self.id}:\t" \
+        return f"Potwor {self.monster_id}:\t" \
                f"punkty_zycia={self.life_points}\t" \
                f"sila={self.strenght}".expandtabs(8)

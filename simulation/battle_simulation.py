@@ -18,7 +18,8 @@ def simulate_battle(config):
             ),
             gold=calculate_value_with_randomness(
                 float(config["PLAYER_GOLD"]), float(config["PLAYER_GOLD_RANDOMNESS"])
-            )
+            ),
+            gained_war_exp_buff=0.1
         ) for n in range(int(config["N_PLAYERS"]))
     ]
 
