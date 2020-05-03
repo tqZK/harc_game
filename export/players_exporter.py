@@ -2,6 +2,7 @@ import csv
 import json
 
 from game.player import Player
+from export.items_exporter import ItemsExporter
 
 
 class PlayersExporter:
@@ -9,18 +10,23 @@ class PlayersExporter:
         self.mapping = {}
         with open('export/mappings/player.json') as f:
             self.mapping = json.load(f)
+        self.items_exporter = ItemsExporter()
 
     def export_players_tsv(self, filename):
         data = self.read_tsv_file(filename)
-
         data = self.remove_empty_lines(data)
 
         players = []
         for row in data:
-            print(row)
-            player = Player(**row)
+            row_cleared = {k: v for k, v in row.items() if v != "" and v != "-"}
+            self.parse_player_items(row_cleared)
+            # TODO: parse "tak" etc. to True
+            # TODO: parse str to int etc.
+            print(row_cleared)
+            player = Player(**row_cleared)
             # self.validate_player_with_data(player, row)
             players.append(player)
+            print('------')
 
         return players
 
@@ -40,6 +46,14 @@ class PlayersExporter:
                 data_cleared.append(row)
         return data_cleared
 
+    def parse_player_items(self, player_data):
+        item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2"]
+        for item_place in item_places:
+            if item_place in player_data:
+                item = player_data[item_place]
+                parsed_item = self.items_exporter.parse_single_item(item)
+                player_data[item_place] = parsed_item
+
     def validate_player_with_data(self, player, row):
         for attr_name, attr in zip(
             ["lvl", "exp", "dmg", "cumulative_gold", "max_life_points"],
@@ -48,3 +62,4 @@ class PlayersExporter:
             assert row[attr_name] == attr, f"Player {player.player_id} {attr_name} {attr} is not equal to exported {attr_name} {row[attr_name]}"
 
         # TODO: check for present bag - if not, then other_2 should be empty
+        # TODO: validate buffs

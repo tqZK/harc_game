@@ -26,17 +26,22 @@ class Player:
         self.training_thh = (player_data.get("training_thh") == "tak")
         self.training_malk = (player_data.get("training_malk") == "tak")
         self.training_wig = (player_data.get("training_wig") == "tak")
+
+        # TODO: this should be set only based on items!
         self.gained_gold_buff = float(player_data.get("gained_gold_buff"))
         self.gained_strength_buff = float(player_data.get("gained_strength_buff"))
         self.gained_logistics_buff = float(player_data.get("gained_logistics_buff"))
         self.gained_war_exp_buff = float(player_data.get("gained_war_exp_buff"))
-        self.bag = (player_data.get("bag") == "tak")
-        self.boosted_armor = (player_data.get("boosted_armor") == "tak")
+        # TODO: include gained_war_exp_buff in calculating war exp at end of battle
+
+        # self.bag = (player_data.get("bag") == "tak")
+        # self.boosted_armor = (player_data.get("boosted_armor") == "tak")
         self.cumulative_gold = self.gold + int(player_data.get("gold_for_guild", 0)) + int(player_data.get("gold_for_private", 0))
 
         self.hit_chance_buffs = 0.0
         self.defense_chance_buffs = 0.0
         self.first_attack_chance_buffs = 0.0
+        self.recon_chance_buffs = 0.0
         self.added_life_points = 0
 
         self.parse_items(player_data)
@@ -97,9 +102,13 @@ class Player:
         # TODO: dodefiniowac
         return round(self.first_attack_chance_buffs + BASE_FIRST_ATTACK_CHANCE, 3)
 
-    def parse_items(self, players_data):
-        # TODO
-        pass
+    def parse_items(self, player_data):
+        item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2"]
+        for item_place in item_places:
+            if item_place in player_data:
+                item = player_data[item_place]
+                for stat in item[1]:
+                    setattr(self, stat[0], getattr(self, stat[0]) + stat[1])
 
     def __repr__(self):
         return f"<Gracz {self.player_id}>"

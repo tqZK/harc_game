@@ -1,0 +1,11 @@
+{
+  "zWIO": "gained_logistics_buff",
+  "zSIL": "gained_strength_buff",
+  "zN": "gained_gold_buff",
+  "zDB": "gained_war_exp_buff",
+  "SU": "defense_chance_buffs",
+  "ST": "hit_chance_buffs",
+  "SP": "first_attack_chance_buffs",
+  "SZ": "recon_chance_buffs",
+  "PZ": "added_life_points"
+}
