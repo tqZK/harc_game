@@ -48,7 +48,7 @@ class PlayersExporter:
         return data_cleared
 
     def parse_player_items(self, player_data):
-        item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2"]
+        item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2", "bag"]
         for item_place in item_places:
             if item_place in player_data:
                 item = player_data[item_place]
@@ -56,12 +56,30 @@ class PlayersExporter:
                 player_data[item_place] = parsed_item
 
     def validate_player_with_data(self, player, row):
-        for attr_name in ["lvl", "exp", "dmg", "cumulative_gold", "max_life_points"]:
+        for attr_name in [
+            "lvl", "exp", "dmg", "cumulative_gold", "max_life_points",
+        ]:
             value = getattr(player, attr_name)
             # TODO: change it after parsing types
             exported = type(value)(row[attr_name])
             assert exported == value, \
                 f"Player {player.player_id} {attr_name} {value} is not equal to exported {attr_name} {exported}"
 
-        # TODO: check for present bag - if not, then other_2 should be empty
+        for attr_name in [
+            "hit_chance", "defense_chance", "first_attack_chance", "recon_chance",
+            "gained_gold_buff", "gained_strength_buff", "gained_war_exp_buff", "gained_logistics_buff"
+        ]:
+            value = getattr(player, attr_name)
+            # TODO: change it after parsing types
+            exported = round(type(value)(row[attr_name][:-1]) / 100, 3)
+            assert exported == value, \
+                f"Player {player.player_id} {attr_name} {value} is not equal to exported {attr_name} {exported}"
+
+        self._validate_bag(player)
+
+    def _validate_bag(self, player):
+        assert not(player.bag is False and player.other_1 is not None and player.other_2 is not None), \
+            f"Player {player.player_id} doesn't have a bag, but has 2 items of category 'other': {player.other_1}, {player.other_2}"
+
+
         # TODO: validate buffs

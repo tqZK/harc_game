@@ -11,12 +11,11 @@
   "kurs THH": "training_thh",
   "Kurs Małkowskiego": "training_malk",
   "Kurs Wigierczyków": "training_wig",
-  "modyfikator do zdobywanego N": "gained_gold_buff",
-  "modyfikator do zdobywanego SIL": "gained_strength_buff",
-  "modyfikator do zdobywanego WIO": "gained_logistics_buff",
-  "modyfikator do zdobywanego DB": "gained_war_exp_buff",
+  "zN": "gained_gold_buff",
+  "zSIL": "gained_strength_buff",
+  "zDB": "gained_war_exp_buff",
+  "zWIO": "gained_logistics_buff",
   "plecak": "bag",
-  "pancerz wspomagany": "boosted_armor",
   "hełm": "helmet",
   "zbroja":  "armor",
   "ręka 1": "hand_1",
@@ -34,6 +33,7 @@
   "SU": "defense_chance",
   "SP": "first_attack_chance",
   "PŻ": "max_life_points",
+  "SZ": "recon_chance",
 
   "uwagi": "comments"
 }

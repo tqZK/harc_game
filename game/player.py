@@ -1,7 +1,7 @@
 import logging
 
 from game.config import (COEF_LOGISTICS_TO_EXP, COEF_STRENGHT_TO_EXP, COEF_GOLD_TO_EXP, COEF_WAR_EXP_TO_EXP,
-                         BASE_HIT_CHANCE, EXP_TO_NEXT_LVLS, BASE_DMG, BASE_DEFENSE_CHANCE, BASE_FIRST_ATTACK_CHANCE, BASE_LIFE_POINTS)
+                         BASE_HIT_CHANCE, EXP_TO_NEXT_LVLS, BASE_DMG, BASE_DEFENSE_CHANCE, TRAINING_BUFFS, BASE_FIRST_ATTACK_CHANCE, BASE_RECON_CHANCE, BASE_LIFE_POINTS)
 
 logger = logging.getLogger(__name__)
 
@@ -21,17 +21,18 @@ class Player:
         self.initials = player_data.get("initials", "")
 
         self.war_exp = int(player_data.get("war_exp", 0))
-        self.driver = (player_data.get("driver", "") == "tak")
-        self.training_cich = (player_data.get("training_cich", "") == "tak")
-        self.training_thh = (player_data.get("training_thh", "") == "tak")
-        self.training_malk = (player_data.get("training_malk", "") == "tak")
-        self.training_wig = (player_data.get("training_wig", "") == "tak")
+        self.driver = (player_data.get("driver", "nie") == "tak")
+        self.training_cich = (player_data.get("training_cich", "-") == "tak")
+        self.training_thh = (player_data.get("training_thh", "-") == "tak")
+        self.training_malk = (player_data.get("training_malk", "-") == "tak")
+        self.training_wig = (player_data.get("training_wig", "-") == "tak")
+        self.bag = (player_data.get("bag", "-") != "-")
 
-        # TODO: this should be set only based on items?
-        self.gained_gold_buff = float(player_data.get("gained_gold_buff", 0.0))
-        self.gained_strength_buff = float(player_data.get("gained_strength_buff", 0.0))
-        self.gained_logistics_buff = float(player_data.get("gained_logistics_buff", 0.0))
-        self.gained_war_exp_buff = float(player_data.get("gained_war_exp_buff", 0.0))
+        # parsed_data = self.parse_init_data(player_data)
+        self.gained_gold_buff = 0.0
+        self.gained_strength_buff = 0.0
+        self.gained_logistics_buff = 0.0
+        self.gained_war_exp_buff = 0.0
 
         self.cumulative_gold = self.gold + int(player_data.get("gold_for_guild", 0)) + int(player_data.get("gold_for_private", 0))
 
@@ -41,7 +42,15 @@ class Player:
         self.recon_chance_buffs = 0.0
         self.added_life_points = 0
 
+        self.helmet = player_data.get("helmet", None)
+        self.armor = player_data.get("armor", None)
+        self.hand_1 = player_data.get("hand_1", None)
+        self.hand_2 = player_data.get("hand_2", None)
+        self.other_1 = player_data.get("other_1", None)
+        self.other_2 = player_data.get("other_2", None)
+
         self.parse_items(player_data)
+        self.parse_trainings()
 
         logger.debug(f"Gracz {self.player_id} pomyslnie stworzony")
 
@@ -95,13 +104,37 @@ class Player:
         # SP, inicjatywa
         return round(BASE_FIRST_ATTACK_CHANCE + self.first_attack_chance_buffs, 3)
 
+    @property
+    def recon_chance(self):
+        # SZ
+        return round(BASE_RECON_CHANCE + self.recon_chance_buffs, 3)
+
+    def parse_init_data(self, player_data):
+        parsed_data = {}
+        for field in [
+            "gained_gold_buff",
+            "gained_strength_buff",
+            "gained_logistics_buff",
+            "gained_war_exp_buff"
+        ]:
+            parsed_data[field] = float(player_data.get(field, "0%")[:-1])
+        return parsed_data
+
     def parse_items(self, player_data):
-        item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2"]
+        item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2", "bag"]
         for item_place in item_places:
             if item_place in player_data:
-                item = player_data[item_place]
-                for stat in item[1]:
+                item_name, item_stats = player_data[item_place]
+                for stat in item_stats:
                     setattr(self, stat[0], getattr(self, stat[0]) + stat[1])
+                setattr(self, item_place, item_name)
+                # TODO: if plyn dezynfekujacy, add healing
+
+    def parse_trainings(self):
+        for training_name, training_buffs in TRAINING_BUFFS:
+            if getattr(self, training_name):
+                for buff_name, buff_value in training_buffs:
+                    setattr(self, buff_name, getattr(self, buff_name) + buff_value)
 
     def __repr__(self):
         return f"<Gracz {self.player_id}>"
