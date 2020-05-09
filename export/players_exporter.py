@@ -6,11 +6,12 @@ from export.items_exporter import ItemsExporter
 
 
 class PlayersExporter:
-    def __init__(self):
+    def __init__(self, buffs_from_guild=None):
         self.mapping = {}
         with open('export/mappings/player.json') as f:
             self.mapping = json.load(f)
         self.items_exporter = ItemsExporter()
+        self.buffs_from_guild = buffs_from_guild
 
     def export_players_tsv(self, filename):
         data = self.read_tsv_file(filename)
@@ -23,7 +24,7 @@ class PlayersExporter:
             # TODO: parse "tak" etc. to True
             # TODO: parse str to int etc.
             print(row_cleared)
-            player = Player(**row_cleared)
+            player = Player(buffs_from_guild=self.buffs_from_guild, **row_cleared)
             print(player)
             self.validate_player_with_data(player, row)
             players.append(player)

@@ -3,7 +3,7 @@ COEF_LOGISTICS_TO_EXP = 0.5
 COEF_GOLD_TO_EXP = 0.01
 COEF_WAR_EXP_TO_EXP = 1
 
-BASE_HIT_CHANCE = 0.4
+BASE_HIT_CHANCE = 0.37
 BASE_DEFENSE_CHANCE = 0.4
 BASE_FIRST_ATTACK_CHANCE = 0.5
 BASE_RECON_CHANCE = 0.5
@@ -16,3 +16,5 @@ TRAINING_BUFFS = [
     ("training_malk", [("gained_gold_buff", 0.25)]),
     ("training_wig", [("gained_war_exp_buff", 0.25)]),
 ]
+
+BASE_TAX_RATE = 0.5

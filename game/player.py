@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class Player:
-    def __init__(self, **player_data):
+    def __init__(self, buffs_from_guild=None, **player_data):
         try:
             self.player_id = int(player_data["player_id"])
             self.strenght = int(player_data["strenght"])
@@ -16,6 +16,8 @@ class Player:
         except KeyError as e:
             logger.error(f"Nie mozna zainicjalizowac gracza - nie podano statystyki {e}")
             raise
+
+        self.guild_stats = buffs_from_guild if buffs_from_guild else {}
 
         self.name = player_data.get("name", "")
         self.initials = player_data.get("initials", "")
@@ -28,7 +30,6 @@ class Player:
         self.training_wig = (player_data.get("training_wig", "-") == "tak")
         self.bag = (player_data.get("bag", "-") != "-")
 
-        # parsed_data = self.parse_init_data(player_data)
         self.gained_gold_buff = 0.0
         self.gained_strength_buff = 0.0
         self.gained_logistics_buff = 0.0
@@ -42,6 +43,9 @@ class Player:
         self.recon_chance_buffs = 0.0
         self.added_life_points = 0
 
+        self.raid_rare_item_chance = 0.0
+        self.raid_legendary_item_chance = 0.0
+
         self.helmet = player_data.get("helmet", None)
         self.armor = player_data.get("armor", None)
         self.hand_1 = player_data.get("hand_1", None)
@@ -51,6 +55,7 @@ class Player:
 
         self.parse_items(player_data)
         self.parse_trainings()
+        self.parse_guild_stats()
 
         logger.debug(f"Gracz {self.player_id} pomyslnie stworzony")
 
@@ -109,17 +114,6 @@ class Player:
         # SZ
         return round(BASE_RECON_CHANCE + self.recon_chance_buffs, 3)
 
-    def parse_init_data(self, player_data):
-        parsed_data = {}
-        for field in [
-            "gained_gold_buff",
-            "gained_strength_buff",
-            "gained_logistics_buff",
-            "gained_war_exp_buff"
-        ]:
-            parsed_data[field] = float(player_data.get(field, "0%")[:-1])
-        return parsed_data
-
     def parse_items(self, player_data):
         item_places = ["helmet", "armor", "hand_1", "hand_2", "other_1", "other_2", "bag"]
         for item_place in item_places:
@@ -135,6 +129,11 @@ class Player:
             if getattr(self, training_name):
                 for buff_name, buff_value in training_buffs:
                     setattr(self, buff_name, getattr(self, buff_name) + buff_value)
+
+    def parse_guild_stats(self):
+        for stat_name, stat_value in self.guild_stats.items():
+            print(stat_name)
+            setattr(self, stat_name, getattr(self, stat_name) + stat_value)
 
     def __repr__(self):
         return f"<Gracz {self.player_id}>"
