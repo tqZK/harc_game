@@ -1,0 +1,14 @@
+{
+  "Ustalony podatek": "tax_rate",
+
+  "SU": "defense_chance_buffs",
+  "SP": "first_attack_chance_buffs",
+  "SZ": "recon_chance_buffs",
+
+  "zSIL": "gained_strength_buff",
+  "zDB": "gained_war_exp_buff",
+  "zWIO": "gained_logistics_buff",
+
+  "raid - szansa na rzadki przedmiot": "raid_rare_item_chance",
+  "raid - szansa na legendarny przedmiot": "raid_legendary_item_chance"
+}
