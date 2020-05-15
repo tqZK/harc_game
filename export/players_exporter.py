@@ -23,12 +23,9 @@ class PlayersExporter:
             self.parse_player_items(row_cleared)
             # TODO: parse "tak" etc. to True
             # TODO: parse str to int etc.
-            print(row_cleared)
             player = Player(buffs_from_guild=self.buffs_from_guild, **row_cleared)
-            print(player)
             self.validate_player_with_data(player, row)
             players.append(player)
-            print('------')
 
         return players
 

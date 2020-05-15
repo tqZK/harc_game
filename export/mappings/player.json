@@ -35,5 +35,6 @@
   "PŻ": "max_life_points",
   "SZ": "recon_chance",
 
-  "uwagi": "comments"
+  "uwagi": "comments",
+  "hasło": "password"
 }
