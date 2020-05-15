@@ -39,7 +39,4 @@ def simulate_battle(config):
     battle.run()
 
     battle.results.print_results()
-    print()
-    print('------------------------')
-    print()
     return battle.results

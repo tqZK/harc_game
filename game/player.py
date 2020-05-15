@@ -59,7 +59,14 @@ class Player:
         logger.debug(f"Gracz {self.player_id} {self.name} pomyślnie stworzony")
 
         self._life_points = self.max_life_points
-        self.dmg_done = 0.0
+        self.battle_dmg_done = 0.0
+        self.battle_n_fights = 0
+        self.battle_attacked_first = 0
+        self.battle_attacked = 0
+        self.battle_was_attacked = 0
+        self.battle_hit = 0
+        self.battle_defended = 0
+        self.battle_received_dmg = 0
         self.received_war_exp = 0
 
     @property
@@ -158,6 +165,13 @@ class Player:
                f"SP={self.first_attack_chance}\t".expandtabs(8)
 
     def reset_battle_results(self):
-        self.dmg_done = 0
         self._life_points = self.max_life_points
+        self.battle_dmg_done = 0.0
+        self.battle_n_fights = 0
+        self.battle_attacked_first = 0
+        self.battle_attacked = 0
+        self.battle_was_attacked = 0
+        self.battle_hit = 0
+        self.battle_defended = 0
+        self.battle_received_dmg = 0
         self.received_war_exp = 0
