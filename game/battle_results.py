@@ -38,15 +38,15 @@ class BattleResults:
         print(f"Wynik bitwy: {'wygrana' if self.result else 'przegrana'}")
         print(f"Liczba rund: {self.n_rounds}")
         print(f"Liczba walk: {self.n_fights}")
-        print(f"Gracz atakowal (na bitwe): {self.battle_player_attacked}")
-        print(f"Gracz trafil (na bitwe): {self.battle_player_hit}")
-        print(f"Gracz trafil % (na bitwe): {round(self.battle_player_hit / self.battle_player_attacked, 3)}")
-        print(f"Potwor atakowal (na bitwe): {self.battle_monster_attacked}")
-        print(f"Gracz obronil (na bitwe): {self.battle_player_defened}")
-        print(f"Gracz obronil % (na bitwe): {round(self.battle_player_defened / self.battle_monster_attacked, 3)}")
+        print(f"Gracz atakował (na bitwę): {self.battle_player_attacked}")
+        print(f"Gracz trafił (na bitwę): {self.battle_player_hit}")
+        print(f"Gracz trafił % (na bitwę): {round(self.battle_player_hit / self.battle_player_attacked, 3)}")
+        print(f"N atakował (na bitwę): {self.battle_monster_attacked}")
+        print(f"Gracz obronił (na bitwę): {self.battle_player_defened}")
+        print(f"Gracz obronił % (na bitwę): {round(self.battle_player_defened / self.battle_monster_attacked, 3)}")
 
-        print(f"Gracz atakowal pierwszy: {self.battle_player_attacked_first}")
-        print(f"Gracz atakowal pierwszy % (na bitwe): {round(self.battle_player_attacked_first / self.n_fights, 3)}")
+        print(f"Gracz atakował pierwszy: {self.battle_player_attacked_first}")
+        print(f"Gracz atakował pierwszy % (na bitwę): {round(self.battle_player_attacked_first / self.n_fights, 3)}")
 
 
 class RoundResults:

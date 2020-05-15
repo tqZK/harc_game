@@ -23,6 +23,6 @@ class Monster:
         return bool(self.life_points > 0)
 
     def __str__(self):
-        return f"Potwor {self.monster_id}:\t" \
+        return f"Nieosłonięty {self.monster_id}:\t" \
                f"punkty_zycia={self.life_points}\t" \
                f"sila={self.strenght}".expandtabs(8)
