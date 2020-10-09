@@ -1,9 +1,9 @@
 import argparse
 import configparser
 import logging
+logging.basicConfig(format='%(message)s')
 from simulation.battle_simulation import simulate_battle
 
-logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -31,4 +31,4 @@ if __name__ == '__main__':
     for _ in range(n_battles):
         results.append(simulate_battle(config).result)
 
-    logger.info(f"Zasymulowano {n_battles} bitew, z czego wygrano {sum(results)} ({sum(results) * 100 / n_battles}%)")
+    logging.info(f"Zasymulowano {n_battles} bitew, z czego wygrano {sum(results)} ({sum(results) * 100 / n_battles}%)")

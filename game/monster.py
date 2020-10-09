@@ -1,6 +1,6 @@
 import logging
+logging.basicConfig(format='%(message)s')
 
-logger = logging.getLogger(__name__)
 
 
 class Monster:
@@ -23,6 +23,6 @@ class Monster:
         return bool(self.life_points > 0)
 
     def __str__(self):
-        return f"Nieosłonięty {self.monster_id}:\t" \
-               f"punkty_zycia={self.life_points}\t" \
+        return f"Nieosłonięty {self.monster_id}: " \
+               f"punkty_zycia={self.life_points} " \
                f"sila={self.strenght}".expandtabs(8)

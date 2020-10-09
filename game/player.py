@@ -1,9 +1,9 @@
 import logging
+logging.basicConfig(format='%(message)s')
 
 from game.config import (COEF_LOGISTICS_TO_EXP, COEF_STRENGHT_TO_EXP, COEF_GOLD_TO_EXP, COEF_WAR_EXP_TO_EXP,
                          BASE_HIT_CHANCE, EXP_TO_NEXT_LVLS, BASE_DMG, BASE_DEFENSE_CHANCE, TRAINING_BUFFS, BASE_FIRST_ATTACK_CHANCE, BASE_RECON_CHANCE, BASE_LIFE_POINTS)
 
-logger = logging.getLogger(__name__)
 
 
 class Player:
@@ -16,7 +16,7 @@ class Player:
             self.name = player_data.get("name", "")
             self.initials = player_data.get("initials", "")
         except KeyError as e:
-            logger.error(f"Nie można zainicjalizować gracza - nie podano statystyki {e}")
+            logging.error(f"Nie można zainicjalizować gracza - nie podano statystyki {e}")
             raise
 
         self.guild_stats = buffs_from_guild if buffs_from_guild else {}
@@ -56,7 +56,7 @@ class Player:
         self.parse_trainings()
         self.parse_guild_stats()
 
-        logger.debug(f"Gracz {self.player_id} {self.name} pomyślnie stworzony")
+        logging.debug(f"Gracz {self.player_id} {self.name} pomyślnie stworzony")
 
         self._life_points = self.max_life_points
         self.battle_dmg_done = 0.0
@@ -144,24 +144,24 @@ class Player:
         return f"<Gracz {self.player_id}>"
 
     def __str__(self):
-        return f"Gracz {self.player_id} - {self.name}:\t" \
-               f"lvl={self.lvl}\t" \
-               f"siła={self.strenght}\t" \
-               f"wikt_opierunek={self.logistics}\t" \
-               f"nakrętki={self.gold}\t" \
-               f"nakrętki_total={self.cumulative_gold}\t" \
+        return f"Gracz {self.player_id} - {self.name}: " \
+               f"lvl={self.lvl} " \
+               f"siła={self.strenght} " \
+               f"wikt_opierunek={self.logistics} " \
+               f"nakrętki={self.gold} " \
+               f"nakrętki_total={self.cumulative_gold} " \
                f"exp={self.exp}".expandtabs(11)
 
     def fight_stats(self):
-        return f"Gracz {self.player_id} - {self.name}:\t" \
-               f"lvl={self.lvl}\t" \
-               f"punkty_życia={self.life_points}\t" \
-               f"max_punkty_życia={self.max_life_points}\t" \
-               f"siła={self.strenght}\t" \
-               f"dmg={self.dmg}\t" \
-               f"ST={self.hit_chance}\t" \
-               f"SU={self.defense_chance}\t" \
-               f"SP={self.first_attack_chance}\t".expandtabs(8)
+        return f"Gracz {self.player_id} - {self.name}: " \
+               f"lvl={self.lvl} " \
+               f"punkty_życia={self.life_points} " \
+               f"max_punkty_życia={self.max_life_points} " \
+               f"siła={self.strenght} " \
+               f"dmg={self.dmg} " \
+               f"ST={self.hit_chance} " \
+               f"SU={self.defense_chance} " \
+               f"SP={self.first_attack_chance} ".expandtabs(8)
 
     def reset_battle_results(self):
         self._life_points = self.max_life_points
