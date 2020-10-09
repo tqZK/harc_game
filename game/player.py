@@ -138,7 +138,6 @@ class Player:
 
     def parse_guild_stats(self):
         for stat_name, stat_value in self.guild_stats.items():
-            print(stat_name)
             setattr(self, stat_name, getattr(self, stat_name) + stat_value)
 
     def __repr__(self):
