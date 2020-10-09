@@ -11,10 +11,10 @@ import configparser
 def simulate_battle(config):
     # TODO: add saving log file
     guild_exporter = GuildExporter()
-    guild_stats, guild_stats_for_player = guild_exporter.export_guild_tsv('real_data/gildia_13_05.tsv')
+    guild_stats, guild_stats_for_player = guild_exporter.export_guild_tsv('real_data/BAZA_DANYCH - GILDIA.tsv')
 
     exporter = PlayersExporter(buffs_from_guild=guild_stats_for_player)
-    players = exporter.export_players_tsv('real_data/bitwa_13_05.tsv')
+    players = exporter.export_players_tsv('real_data/BAZA_DANYCH - GRACZE.tsv')
 
     monsters = [
         Monster(
