@@ -1,8 +1,3 @@
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 class Guild:
     def __init__(self):
         self.players = []

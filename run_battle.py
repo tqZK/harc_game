@@ -5,8 +5,6 @@ from game.utils import calculate_value_with_randomness
 from export.players_exporter import PlayersExporter
 from export.guild_exporter import GuildExporter
 
-import logging
-logger = logging.getLogger(__name__)
 import configparser
 
 
@@ -38,8 +36,6 @@ def simulate_battle(config):
 
 if __name__ == '__main__':
 
-    logging.basicConfig(level=logging.INFO)
-
     config = configparser.ConfigParser()
     config.read_file(open("simulation/config.ini"))
     config = config["battle"]
@@ -49,4 +45,4 @@ if __name__ == '__main__':
     for _ in range(n_battles):
         results.append(simulate_battle(config).result)
 
-    print(f"Zasymulowano {n_battles} bitew, z czego wygrano {sum(results)} ({sum(results) * 100 / n_battles}%)")
+    print(f"Zasymulowano {n_battles} bitew, z czego wygrano {sum(results)} ({round(sum(results) * 100 / (n_battles + 0.0000001), 2)}%)")
