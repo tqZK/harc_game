@@ -1,3 +1,8 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class Monster:
     def __init__(self, monster_id, strength, life_points, first_attack_chance):
         self.monster_id = monster_id

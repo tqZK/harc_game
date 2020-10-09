@@ -5,6 +5,8 @@ from game.utils import calculate_value_with_randomness
 from export.players_exporter import PlayersExporter
 from export.guild_exporter import GuildExporter
 
+import logging
+logger = logging.getLogger(__name__)
 import configparser
 
 
@@ -35,6 +37,8 @@ def simulate_battle(config):
 
 
 if __name__ == '__main__':
+
+    logging.basicConfig(level=logging.INFO)
 
     config = configparser.ConfigParser()
     config.read_file(open("simulation/config.ini"))

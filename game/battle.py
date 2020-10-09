@@ -1,8 +1,11 @@
+import logging
 import statistics
 import random
 
 from game.battle_results import BattleResults, RoundResults, FightResults
 from game.utils import calculate_sucess
+
+logger = logging.getLogger(__name__)
 
 
 class Battle:
@@ -19,7 +22,7 @@ class Battle:
     def run(self):
         round_id = 1
         while any([player.alive for player in self.players]) and any([monster.alive for monster in self.monsters]):
-            print(f">>> Runda {round_id}")
+            logger.info(f">>> Runda {round_id}")
             self.roundx()
             round_id += 1
 
@@ -28,13 +31,13 @@ class Battle:
         else:
             result = 1
 
-        print(f">>>>> Bitwa {'wygrana' if result else 'przegrana'}")
-        print("")
-        print("")
-        print("")
-        print("")
-        print("")
-        print("")
+        logger.info(f">>>>> Bitwa {'wygrana' if result else 'przegrana'}")
+        logger.info("")
+        logger.info("")
+        logger.info("")
+        logger.info("")
+        logger.info("")
+        logger.info("")
         self.results.result = result
         self.results.calculate_results(self.players, self.monsters)
         self.calculate_received_war_exp()
@@ -54,8 +57,8 @@ class Battle:
         round_results.n_players = len(players_alive)
         round_results.n_monsters = len(monsters_alive)
 
-        print(f">>> Liczba żyjących graczy: {round_results.n_players}")
-        print(f">>> Liczba żyjących Nieosłoniętych: {round_results.n_monsters}")
+        logger.info(f">>> Liczba żyjących graczy: {round_results.n_players}")
+        logger.info(f">>> Liczba żyjących Nieosłoniętych: {round_results.n_monsters}")
 
         for player, monster in zip(players_alive, monsters_alive):
             round_results.fights.append(self.fight(player, monster))
@@ -65,9 +68,9 @@ class Battle:
     def fight(self, player, monster):
         fight_results = FightResults()
 
-        print(f">> Walka {player.name} z Nieosłoniętym numer {monster.monster_id}")
-        print(f">> {player.fight_stats()}")
-        print(f">> {monster}")
+        logger.info(f">> Walka {player.name} z Nieosłoniętym numer {monster.monster_id}")
+        logger.info(f">> {player.fight_stats()}")
+        logger.info(f">> {monster}")
         player.battle_n_fights += 1
 
         if calculate_sucess(player.first_attack_chance):
@@ -84,53 +87,53 @@ class Battle:
 
     @staticmethod
     def player_attacks(player, monster, fight_results):
-        print(f"{player.name} atakuje Nieosłoniętego.")
+        logger.info(f"{player.name} atakuje Nieosłoniętego.")
         fight_results.player_attacked = True
         player.battle_attacked += 1
         if calculate_sucess(player.hit_chance):
             monster.life_points -= player.dmg
             player.battle_dmg_done += player.dmg
-            print(f"{player.name} trafił Nieosłoniętego z wartością {player.dmg}. "
+            logger.info(f"{player.name} trafił Nieosłoniętego z wartością {player.dmg}. "
                         f"Pozostale punkty życia Nieosłoniętego: {monster.life_points}")
             fight_results.player_hit = True
             player.battle_hit += 1
             if not monster.alive:
-                print("Nieosłonięty zginął")
+                logger.info("Nieosłonięty zginął")
                 fight_results.monster_died = True
                 return False
         else:
-            print(f"{player.name} nie trafił.")
+            logger.info(f"{player.name} nie trafił.")
         return True
 
     @staticmethod
     def monster_attacks(player, monster, fight_results):
-        print(f"Nieosłonięty atakuje gracza o ksywie {player.name}.")
+        logger.info(f"Nieosłonięty atakuje gracza o ksywie {player.name}.")
         fight_results.monster_attacked = True
         player.battle_was_attacked += 1
         if calculate_sucess(player.defense_chance):
-            print(f"{player.name} obronił się.")
+            logger.info(f"{player.name} obronił się.")
             fight_results.player_defended = True
             player.battle_defended += 1
         else:
             player.life_points -= monster.strenght
             player.battle_received_dmg += monster.strenght
-            print(f"{player.name} nie obronił się i Nieosłonięty zaatakował z wartością {monster.strenght}. "
+            logger.info(f"{player.name} nie obronił się i Nieosłonięty zaatakował z wartością {monster.strenght}. "
                         f"Pozostałe punkty życia gracza o ksywie {player.name}: {player.life_points}")
             if not player.alive:
-                print(f"{player.name} zemdlał.")
+                logger.info(f"{player.name} zemdlał.")
                 fight_results.player_died = True
                 return False
         return True
 
     def calculate_received_war_exp(self):
-        print(f"Wynik bitwy: {'wygrana' if self.results.result else 'przegrana'}")
-        print(f"W bitwie walczyło {len(self.players)} graczy oraz {len(self.monsters)} Nieosłoniętych.")
+        logger.info(f"Wynik bitwy: {'wygrana' if self.results.result else 'przegrana'}")
+        logger.info(f"W bitwie walczyło {len(self.players)} graczy oraz {len(self.monsters)} Nieosłoniętych.")
         if self.results.result:
-            print(f"{len([player for player in self.players if player.alive])} graczy przetrwało bitwę.")
+            logger.info(f"{len([player for player in self.players if player.alive])} graczy przetrwało bitwę.")
         else:
-            print(f"{len([monster for monster in self.monsters if monster.alive])} Nieosłoniętych przetrwało bitwę.")
-        print(f"Gracze zadali łącznie {sum([player.battle_dmg_done for player in self.players])} obrażeń.")
-        print(f"Nieosłonięci zadali łącznie {sum([player.battle_received_dmg for player in self.players])} obrażeń.")
+            logger.info(f"{len([monster for monster in self.monsters if monster.alive])} Nieosłoniętych przetrwało bitwę.")
+        logger.info(f"Gracze zadali łącznie {sum([player.battle_dmg_done for player in self.players])} obrażeń.")
+        logger.info(f"Nieosłonięci zadali łącznie {sum([player.battle_received_dmg for player in self.players])} obrażeń.")
 
         received = []
         for player in self.players:
@@ -139,11 +142,11 @@ class Battle:
                 player.battle_dmg_done * max(left_life_points_percent, 10) / 100 * (1.0 + player.gained_war_exp_buff)
             )
             received.append(player.received_war_exp)
-            print(player.fight_stats())
+            logger.info(player.fight_stats())
             received_war_exp_info = f", \tma buff {player.gained_war_exp_buff} do otrzymywanego DB\t-\t" \
                                     f"otrzymuje {player.received_war_exp} DB" if self.results.result else ""
 
-            print(f"{player.name} "
+            logger.info(f"{player.name} "
                         f"brał udział w {player.battle_n_fights} walkach, "
                         f"zadał {player.battle_dmg_done} obrazeń, "
                         f"atakował pierwszy w {round(player.battle_attacked_first / (player.battle_attacked + 0.0000001) * 100)}% "
@@ -156,7 +159,7 @@ class Battle:
                         f"{received_war_exp_info}")
 
         if self.results.result:
-            print(f"Średnia wartość otrzymanego DB: {(sum(received) / len(received))}")
-            print(f"Mediana wartości otrzymanego DB: {statistics.median(received)}")
-            print(f"Najmniejsza wartość otrzymanego DB: {min(received)}")
-            print(f"Najwieksza wartość otrzymanego DB: {max(received)}")
+            logger.info(f"Średnia wartość otrzymanego DB: {(sum(received) / len(received))}")
+            logger.info(f"Mediana wartości otrzymanego DB: {statistics.median(received)}")
+            logger.info(f"Najmniejsza wartość otrzymanego DB: {min(received)}")
+            logger.info(f"Najwieksza wartość otrzymanego DB: {max(received)}")

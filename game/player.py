@@ -1,5 +1,9 @@
+import logging
+
 from game.config import (COEF_LOGISTICS_TO_EXP, COEF_STRENGHT_TO_EXP, COEF_GOLD_TO_EXP, COEF_WAR_EXP_TO_EXP,
                          BASE_HIT_CHANCE, EXP_TO_NEXT_LVLS, BASE_DMG, BASE_DEFENSE_CHANCE, TRAINING_BUFFS, BASE_FIRST_ATTACK_CHANCE, BASE_RECON_CHANCE, BASE_LIFE_POINTS)
+
+logger = logging.getLogger(__name__)
 
 
 class Player:
@@ -12,7 +16,7 @@ class Player:
             self.name = player_data.get("name", "")
             self.initials = player_data.get("initials", "")
         except KeyError as e:
-            print(f"Nie można zainicjalizować gracza - nie podano statystyki {e}")
+            logger.error(f"Nie można zainicjalizować gracza - nie podano statystyki {e}")
             raise
 
         self.guild_stats = buffs_from_guild if buffs_from_guild else {}
@@ -52,7 +56,7 @@ class Player:
         self.parse_trainings()
         self.parse_guild_stats()
 
-        print(f"Gracz {self.player_id} {self.name} pomyślnie stworzony")
+        logger.debug(f"Gracz {self.player_id} {self.name} pomyślnie stworzony")
 
         self._life_points = self.max_life_points
         self.battle_dmg_done = 0.0

@@ -1,4 +1,7 @@
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ItemsExporter:
@@ -23,7 +26,7 @@ class ItemsExporter:
                     real_stat_value = float(stat_value[:-1]) / 100 if stat_value.endswith("%") else float(stat_value)
                     parsed_stats.append((self.mapping[stat_name], -real_stat_value))
                 else:
-                    print(f"Could not parse stat '{stat}' in item '{item}' - unknown operator?")
+                    logger.error(f"Could not parse stat '{stat}' in item '{item}' - unknown operator?")
                     raise Exception
         return item_name, parsed_stats
 
