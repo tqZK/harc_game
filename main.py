@@ -31,4 +31,4 @@ if __name__ == '__main__':
     for _ in range(n_battles):
         results.append(simulate_battle(config).result)
 
-    print(f"Zasymulowano {n_battles} bitew, z czego wygrano {sum(results)} ({sum(results) * 100 / n_battles}%)")
+    logger.info(f"Zasymulowano {n_battles} bitew, z czego wygrano {sum(results)} ({sum(results) * 100 / n_battles}%)")

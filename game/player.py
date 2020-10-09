@@ -13,14 +13,13 @@ class Player:
             self.strenght = int(player_data["strenght"])
             self.logistics = int(player_data["logistics"])
             self.gold = int(player_data["gold"])
+            self.name = player_data.get("name", "")
+            self.initials = player_data.get("initials", "")
         except KeyError as e:
-            logger.error(f"Nie mozna zainicjalizowac gracza - nie podano statystyki {e}")
+            logger.error(f"Nie można zainicjalizować gracza - nie podano statystyki {e}")
             raise
 
         self.guild_stats = buffs_from_guild if buffs_from_guild else {}
-
-        self.name = player_data.get("name", "")
-        self.initials = player_data.get("initials", "")
 
         self.war_exp = int(player_data.get("war_exp", 0))
         self.driver = (player_data.get("driver", "nie") == "tak")
@@ -57,10 +56,17 @@ class Player:
         self.parse_trainings()
         self.parse_guild_stats()
 
-        logger.debug(f"Gracz {self.player_id} pomyslnie stworzony")
+        logger.debug(f"Gracz {self.player_id} {self.name} pomyślnie stworzony")
 
         self._life_points = self.max_life_points
-        self.dmg_done = 0.0
+        self.battle_dmg_done = 0.0
+        self.battle_n_fights = 0
+        self.battle_attacked_first = 0
+        self.battle_attacked = 0
+        self.battle_was_attacked = 0
+        self.battle_hit = 0
+        self.battle_defended = 0
+        self.battle_received_dmg = 0
         self.received_war_exp = 0
 
     @property
@@ -132,32 +138,39 @@ class Player:
 
     def parse_guild_stats(self):
         for stat_name, stat_value in self.guild_stats.items():
-            print(stat_name)
             setattr(self, stat_name, getattr(self, stat_name) + stat_value)
 
     def __repr__(self):
         return f"<Gracz {self.player_id}>"
 
     def __str__(self):
-        return f"Gracz {self.player_id}:\t" \
+        return f"Gracz {self.player_id} - {self.name}:\t" \
                f"lvl={self.lvl}\t" \
-               f"sila={self.strenght}\t" \
+               f"siła={self.strenght}\t" \
                f"wikt_opierunek={self.logistics}\t" \
-               f"zloto={self.gold}\t" \
-               f"zloto_total={self.cumulative_gold}\t" \
+               f"nakrętki={self.gold}\t" \
+               f"nakrętki_total={self.cumulative_gold}\t" \
                f"exp={self.exp}".expandtabs(11)
 
     def fight_stats(self):
-        return f"Gracz {self.player_id}:\t" \
+        return f"Gracz {self.player_id} - {self.name}:\t" \
                f"lvl={self.lvl}\t" \
-               f"punkty_zycia={self.life_points}\t" \
-               f"max_punkty_zycia={self.max_life_points}\t" \
-               f"sila={self.strenght}\t" \
+               f"punkty_życia={self.life_points}\t" \
+               f"max_punkty_życia={self.max_life_points}\t" \
+               f"siła={self.strenght}\t" \
+               f"dmg={self.dmg}\t" \
                f"ST={self.hit_chance}\t" \
                f"SU={self.defense_chance}\t" \
                f"SP={self.first_attack_chance}\t".expandtabs(8)
 
     def reset_battle_results(self):
-        self.dmg_done = 0
         self._life_points = self.max_life_points
+        self.battle_dmg_done = 0.0
+        self.battle_n_fights = 0
+        self.battle_attacked_first = 0
+        self.battle_attacked = 0
+        self.battle_was_attacked = 0
+        self.battle_hit = 0
+        self.battle_defended = 0
+        self.battle_received_dmg = 0
         self.received_war_exp = 0
