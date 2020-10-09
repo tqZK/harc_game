@@ -1,3 +1,8 @@
+import logging
+logging.basicConfig(format='%(message)s')
+
+
+
 class Monster:
     def __init__(self, monster_id, strength, life_points, first_attack_chance):
         self.monster_id = monster_id
@@ -18,6 +23,6 @@ class Monster:
         return bool(self.life_points > 0)
 
     def __str__(self):
-        return f"Nieosłonięty {self.monster_id}:\t" \
-               f"punkty_zycia={self.life_points}\t" \
+        return f"Nieosłonięty {self.monster_id}: " \
+               f"punkty_zycia={self.life_points} " \
                f"sila={self.strenght}".expandtabs(8)

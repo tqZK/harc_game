@@ -1,3 +1,7 @@
+import logging
+logging.basicConfig(format='%(message)s', level=logging.INFO)
+
+
 class BattleResults:
     def __init__(self):
         self.result = ''
@@ -31,17 +35,17 @@ class BattleResults:
                 self.battle_player_attacked_first += fight.player_attacked_first
 
     def print_results(self):
-        print(f"Wynik bitwy: {'wygrana' if self.result else 'przegrana'}")
-        print(f"Liczba rund: {self.n_rounds}")
-        print(f"Liczba walk: {self.n_fights}")
-        print(f"Gracz atakował (na bitwę): {self.battle_player_attacked}")
-        print(f"Gracz trafił (na bitwę): {self.battle_player_hit}")
-        print(f"Gracz trafił % (na bitwę): {round(self.battle_player_hit / self.battle_player_attacked, 3)}")
-        print(f"N atakował (na bitwę): {self.battle_monster_attacked}")
-        print(f"Gracz obronił (na bitwę): {self.battle_player_defened}")
-        print(f"Gracz obronił % (na bitwę): {round(self.battle_player_defened / self.battle_monster_attacked, 3)}")
-        print(f"Gracz atakował pierwszy: {self.battle_player_attacked_first}")
-        print(f"Gracz atakował pierwszy % (na bitwę): {round(self.battle_player_attacked_first / self.n_fights, 3)}")
+        logging.info(f"Wynik bitwy: {'wygrana' if self.result else 'przegrana'}")
+        logging.info(f"Liczba rund: {self.n_rounds}")
+        logging.info(f"Liczba walk: {self.n_fights}")
+        logging.info(f"Gracz atakował (na bitwę): {self.battle_player_attacked}")
+        logging.info(f"Gracz trafił (na bitwę): {self.battle_player_hit}")
+        logging.info(f"Gracz trafił % (na bitwę): {round(self.battle_player_hit / self.battle_player_attacked, 3)}")
+        logging.info(f"N atakował (na bitwę): {self.battle_monster_attacked}")
+        logging.info(f"Gracz obronił (na bitwę): {self.battle_player_defened}")
+        logging.info(f"Gracz obronił % (na bitwę): {round(self.battle_player_defened / self.battle_monster_attacked, 3)}")
+        logging.info(f"Gracz atakował pierwszy: {self.battle_player_attacked_first}")
+        logging.info(f"Gracz atakował pierwszy % (na bitwę): {round(self.battle_player_attacked_first / self.n_fights, 3)}")
 
 
 class RoundResults:

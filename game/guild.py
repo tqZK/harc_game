@@ -1,3 +1,8 @@
+import logging
+logging.basicConfig(format='%(message)s')
+
+
+
 class Guild:
     def __init__(self):
         self.players = []
@@ -8,6 +13,6 @@ class Guild:
         return sum([player.strenght for player in self.players])
 
     def __str__(self):
-        return f"Gildia:\t" \
-               f"sila={self.strenght}\t" \
-               f"zloto={self.gold}\t"
+        return f"Gildia: " \
+               f"sila={self.strenght} " \
+               f"zloto={self.gold} "
